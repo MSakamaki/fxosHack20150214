@@ -7,7 +7,8 @@
     "body-parser": "^1.11.0",
     "documentdb": "^0.9.3",
     "doqmentdb": "^0.2.7",
-    "express": "^4.11.2"
+    "express": "^4.11.2",
+    "ws": "^0.7.1"
   },
   "devDependencies": {},
   "scripts": {

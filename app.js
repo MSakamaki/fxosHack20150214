@@ -4,8 +4,13 @@ var express = require('express');
 var app = express();
 var bodyParser = require('body-parser')
 var server = require('http').createServer(app);
-var photoDB = require('./photo_data/index')
+var sheetDB = require('./db/index')
 var port = process.env.PORT || 8000;
+
+var WebSocketServer = require('ws').Server;
+
+
+
 
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({extended: true, limit: '50mb' }));
@@ -22,41 +27,32 @@ server.listen(port,process.env.OPENSHIFT_NODEJS_IP || process.env.IP || undefine
   console.log('Express server listening on %d, in %s mode', port, app.get('env'));
 });
 
-// すべてのデータを取得
-app.get('/api/photos', function (req, res) {
-  photoDB.find({})
-  .then(function(photos){
-    var retData =[];
-    photos.forEach(function(v){
-      retData.push({usr: v.name ,img: v.img})
-    });
-    res.json({"photo_data": retData});
-  });
-});
-
-// 自分のデータを取得
-app.get('/api/myphotos/:uname', function (req, res) {
-  photoDB.find({name: req.params.uname})
-  .then(function(photos){
-    var retData =[];
-    photos.forEach(function(v){
-      retData.push({usr: v.name ,img: v.img})
-    });
-    res.json({"photo_data": retData});
-  });
-});
-
-// 写真投稿
-app.post('/api/photos', function(req, res){
-  var data = req.body;
-  console.log('img size:', data.img.length)
-  photoDB.create({
-      name: data.usr,
-      img: data.img
+// データを取得
+app.get('/api/hello', function (req, res) {
+  console.log('test');
+  sheetDB.create({
+      name: 'test',
+      img: 'test'
     }).catch(console.log);
-  res.json(200)
-})
+  res.json({'message': 'world'});
+});
 
+/* Web Socket */
+var wss = new WebSocketServer({server: server});
+console.log('websocket server created');
+wss.on('connection', function(ws) {
+    var id = setInterval(function() {
+        ws.send(JSON.stringify(new Date()), function() {  });
+    }, 1000);
+
+    console.log('websocket connection open');
+
+    ws.on('close', function() {
+        console.log('websocket connection close');
+        clearInterval(id);
+    });
+});
+/* Web Socket : End*/
 
 /*******/
 exports = module.exports = app;
