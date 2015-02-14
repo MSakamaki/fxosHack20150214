@@ -8,6 +8,7 @@
     "documentdb": "^0.9.3",
     "doqmentdb": "^0.2.7",
     "express": "^4.11.2",
+    "socket.io": "^1.3.3",
     "ws": "^0.7.1"
   },
   "devDependencies": {},

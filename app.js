@@ -4,12 +4,9 @@ var express = require('express');
 var app = express();
 var bodyParser = require('body-parser')
 var server = require('http').createServer(app);
+var WebSocketServer = require('ws').Server;
 var sheetDB = require('./db/index')
 var port = process.env.PORT || 8000;
-
-var WebSocketServer = require('ws').Server;
-
-
 
 
 app.use(bodyParser.json({limit: '50mb'}));
@@ -38,18 +35,20 @@ app.get('/api/hello', function (req, res) {
 });
 
 /* Web Socket */
+
 var wss = new WebSocketServer({server: server});
 console.log('websocket server created');
 wss.on('connection', function(ws) {
     var id = setInterval(function() {
-        ws.send(JSON.stringify(new Date()), function() {  });
+      console.log('interval..')
+      ws.send(JSON.stringify(new Date()), function() {  });
     }, 1000);
 
     console.log('websocket connection open');
 
     ws.on('close', function() {
-        console.log('websocket connection close');
-        clearInterval(id);
+      console.log('websocket connection close');
+      clearInterval(id);
     });
 });
 /* Web Socket : End*/
