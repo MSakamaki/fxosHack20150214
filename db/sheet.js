@@ -10,7 +10,10 @@ var db = new DoQmentDB(connection, 'fxosHack20150214');
 var docs = db.use('sheetBelt');
 
 docs.schema({
-    name: {type: String, 'default': ''},
-    img: {type: String, 'default': ''}
+    size_top: {type: Number, 'default': 0},
+    size_bottom: {type: Number, 'default': 0},
+    time: {type: Number, 'default': 0},
+    date_index: {type: String, 'default': ''}
 });
+
 exports = module.exports = docs;

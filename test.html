@@ -1,35 +1,88 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <style>
-      body {
-        font-family: "Helvetica Neue", helvetica, arial;
-        padding: 15px;
-      }
-
-      ul {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-      }
-
-      ul li {
-        line-height: 1.4;
-      }
-    </style>
 
     <script>
       var ws = new WebSocket('ws://localhost:8000/');
       //var ws = new WebSocket('ws://team-one.azurewebsites.net/');
+      
+      /*
       ws.onmessage = function (event) {
+        console.log('event',event);
         var li = document.createElement('li');
         li.innerHTML = JSON.parse(event.data);
         document.querySelector('#pings').appendChild(li);
+      };*/
+      var family = function(){
+        switch(Math.floor(Math.random() * 4)){
+          case 0: // ぱぱ
+            return 70;
+          case 1: // まま
+            return 48;
+          case 2: // まいさん
+            return 55;
+          case 3: // むすめ
+            return 40;
+          default:
+            return 0; 
+        }
+      }
+      // だいたい30分(1800000)から２時間(7200000)
+      // new Date('2015/01/02 12:00:00').getTime()
+      var waiting = 0;
+      var drivingTime = function(){
+        return 1800000 + Math.floor(Math.random() * 5400000)
+      }
+      var driving = new Date('2015/01/02 00:00:00.000');
+      var endTime = new Date('2015/01/02 23:59:59.000');
+      var StartEmulate = function(){
+          console.log('driving:start', driving.getTime(), endTime.getTime());
+        while (driving.getTime() <= endTime.getTime()){
+          var tim = driving.getTime();
+          driving = new Date( + 500);
+          //console.log('driving', driving, endTime);
+        }
+        console.log('driving:end');
+        return 0;
+      }
+    
+      var id;
+      var botomTest = function(){
+        ws.send(JSON.stringify(
+            {
+              "len":60,
+              "position":0
+            }
+            ));
       };
+      var start = function(){
+        ws.send(JSON.stringify(
+            {
+              "len":90,
+              "position":1
+            }
+            ));
+        //StartEmulate();
+          /*
+        id = setInterval(function() {
+          console.log('interval..')
+          ws.send(JSON.stringify(
+            {
+              "length":timing(),
+              "time":new Date()
+            }
+            ));
+        }, 500);*/
+      }
+      var stop = function(){
+        clearInterval(id);
+      }
     </script>
   </head>
   <body>
     <h1>Pings</h1>
+    <button onclick="start();">TEST START</button>
+    <button onclick="botomTest();">TEST BOTOM SEND</button>
     <ul id='pings'></ul>
   </body>
 </html>
