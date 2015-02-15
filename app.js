@@ -91,22 +91,32 @@ app.get('/api/sheetbelt/days/:day(20[0-9][0-9][0-1][0-9][0-3][0-9])', function (
   });
 });
 
-/* Web Socket */
+/* 車から */
+app.post('/api/car/sheet', function (req, res) {
+  var data = req.body
+  console.log('post car detail', req);
+  console.log('post,car: ',data);
+  //saveSheetDB(data.len_top, data.len_bottom);
+  res.json(200)
+});
 
-var saveDB = function(){
+
+
+/* Document DB */
+var saveSheetDB = function(size_top, size_bottom){
   var date = new Date();
   var mon = date.getMonth()+ 1;
   var monstr =''+(mon<=9 ? '0'+mon : mon);
   var fdt = ''+date.getFullYear() + monstr + date.getDate();
   sheetDB.create({
-      size_top: posMix.is.top,
-      size_bottom: posMix.is.bottom,
+      size_top: size_top,
+      size_bottom: size_bottom,
       time: date.getTime(),
       date_index: fdt
     }).catch(console.log);
-  console.log(posMix.is.top, posMix.is.bottom)
 }
 
+/* Web Socket */
 var posMix={
   is:{
     top  :0,
@@ -138,9 +148,9 @@ wss.on('connection', function(ws) {
     //console.log('data', data)
     var data = JSON.parse(data);
     if (data.position)
-      posMix.pushTop(data.len,   saveDB);
+      posMix.pushTop(data.len,   saveSheetDB);
     else
-      posMix.pushBottom(data.len,saveDB);
+      posMix.pushBottom(data.len,saveSheetDB);
     //console.log(posMix.is.top, posMix.is.bottom)
   });
 
