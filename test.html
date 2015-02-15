@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-
+  <script src="//code.jquery.com/jquery-2.1.3.js"></script>
     <script>
       //var ws = new WebSocket('ws://localhost:8000/');
       var ws = new WebSocket('ws://team-one.azurewebsites.net/');
@@ -77,12 +77,32 @@
       var stop = function(){
         clearInterval(id);
       }
+      var postBody=function(){
+        $.ajax({
+          contentType: 'application/json',
+          data: JSON.stringify({
+            "len_top": 60,
+            "len_bottom": 40
+          }),
+          dataType: 'json',
+          success: function(data){
+              console.log("device control succeeded");
+          },
+          error: function(){
+              console.log("Device control failed");
+          },
+          //processData: false,
+          type: 'POST',
+          url: 'http://team-one.azurewebsites.net/api/car/sheet'
+      });
+      }
     </script>
   </head>
   <body>
     <h1>Pings</h1>
     <button onclick="start();">TEST START</button>
     <button onclick="botomTest();">TEST BOTOM SEND</button>
+    <button onclick="postBody();">POST BODY</button>
     <ul id='pings'></ul>
   </body>
 </html>

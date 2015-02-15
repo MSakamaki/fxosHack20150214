@@ -66,8 +66,8 @@ app.get('/api/users', function (req, res) {
 app.get('/api/current', function (req, res) {
   console.log('get user detail');
   res.json({
-    "size_top":body_len_top,
-    "size_bottom":body_len_bottom
+    "size_top":    body_len_top,
+    "size_bottom": body_len_bottom 
   });
 });
 
