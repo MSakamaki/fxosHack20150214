@@ -6,6 +6,7 @@ var bodyParser = require('body-parser')
 var server = require('http').createServer(app);
 var WebSocketServer = require('ws').Server;
 var sheetDB = require('./db/sheet')
+
 var route = require('./route');
 var port = process.env.PORT || 8000;
 
@@ -61,14 +62,12 @@ app.get('/api/users', function (req, res) {
 });
 
 // /api/current/:{id}
-//使用者 @ パパしか帰らない
-app.get('/api/current/:id', function (req, res) {
+// 現在のtopとbottomの値
+app.get('/api/current', function (req, res) {
   console.log('get user detail');
   res.json({
-    "id":"1",
-    "name":"父親",
-    "size_top": "60",
-    "size_bottom": "40"
+    "size_top":body_len_top,
+    "size_bottom":body_len_bottom
   });
 });
 
@@ -92,12 +91,19 @@ app.get('/api/sheetbelt/days/:day(20[0-9][0-9][0-1][0-9][0-3][0-9])', function (
 });
 
 /* 車から */
+// 悪手:現在のベルト値
+var body_len_top=0,
+    body_len_bottom=0;
 app.post('/api/car/sheet', function (req, res) {
   var data = req.body
-  console.log('post car detail', req);
-  console.log('post,car: ',data);
-  //saveSheetDB(data.len_top, data.len_bottom);
-  res.json(200)
+  body_len_top = data.len_top;
+  body_len_bottom = data.len_bottom;
+  try{
+    saveSheetDB(data.len_top, data.len_bottom);
+    res.json(200);
+  }catch(e){
+    res.json(500, {error: e});
+  }
 });
 
 
